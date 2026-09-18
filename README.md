@@ -1,7 +1,12 @@
 # Clang-Tidy Converter
 
+Forked from: https://github.com/yuriisk/clang-tidy-converter
+
 Python3 script to convert Clang-Tidy output to different formats.
 Supported formats are [Code Climate JSON](https://github.com/codeclimate/platform/blob/master/spec/analyzers/SPEC.md#issue) and HTML report similar to `scan-build` utility.
+
+Supports FIPS-compliant systems by using SHA256 fingerprints rather than MD5.
+
 
 ## Usage
 

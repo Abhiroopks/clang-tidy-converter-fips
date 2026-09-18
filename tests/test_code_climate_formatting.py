@@ -7,14 +7,20 @@ from clang_tidy_converter import CodeClimateFormatter, ClangMessage
 
 class CodeClimateFormatterTest(unittest.TestCase):
     def test_format(self):
+        
+        self.maxDiff = None
+
         child1 = ClangMessage('/some/file/path1.cpp', 8, 10, ClangMessage.Level.NOTE, 'Allocated here', '', ['return new A;', '       ^'])
         msg = ClangMessage('/some/file/path.cpp', 100, 2, ClangMessage.Level.WARNING, 'Memory leak', 'bugprone-undefined-memory-manipulation.SomethingWrong',
                            ['void a(int)', '          ^'], [child1])
         formatter = CodeClimateFormatter()
         args = unittest.mock.Mock()
         args.use_location_lines = True
-        self.assertEqual(
-"""{
+
+        ##
+        # Compare the dicts instead of raw strings
+        self.assertEqual(json.loads(
+"""[{
   "type": "issue",
   "check_name": "bugprone-undefined-memory-manipulation.SomethingWrong",
   "description": "Memory leak",
@@ -42,8 +48,8 @@ class CodeClimateFormatterTest(unittest.TestCase):
   },
   "severity": "major",
   "fingerprint": "f2f6ccb970f2259d10e525b4b5805a5c"
-}\0
-""", formatter.format([msg], args))
+}]
+"""), json.loads(formatter.format([msg], args)))
 
     def test_extract_content(self):
         child1 = ClangMessage('/some/file/path1.cpp', 8, 10, ClangMessage.Level.NOTE, 'Allocated here', '', ['return new A;', '       ^'])
